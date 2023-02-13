@@ -13,22 +13,29 @@ function PricingTool(){
 
     const [item, setItem] = useState("");
     const [soldItemList, setSoldItemList] = useState([])
+    const [loading, setLoading ] = useState("");
 
     async function handleItemChange(event){
         setItem(event.target.value);
     }
 
     async function handleSearch(event){
+        setLoading("Searching...");
         fetch(`http://${API}:3009/prices/getpricelist/${item}`, {
             method: "GET",
           })
             .then((response) => {
               if (response.status === 200) return response.json();
-              throw new Error("authentication has been failed!");
+              throw new Error("Err connecting to API");
             })
             .then((resObject) => {
-                console.log(resObject)
-              setSoldItemList(resObject) 
+              console.log(resObject)
+              if(resObject.length < 1){
+                setLoading("ERROR WITH SEARCH TERM");
+              }else{
+                setSoldItemList(resObject) 
+                setLoading("");
+              }
             })
             .catch((err) => {
               console.log(err);
@@ -50,6 +57,7 @@ function PricingTool(){
                         <Form.Control className="item-input" onChange={handleItemChange} aria-label="search-item" />
                     </InputGroup>
                     <button onClick={handleSearch} className="search-btn">Search</button>
+                    <p className="white-text m-top-10">{loading}</p>
                 </Col>
             </Row>
             <Row>

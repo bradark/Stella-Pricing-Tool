@@ -53,3 +53,7 @@
 .item-input::placeholder{
     color: white;
 }
+
+.item-input:focus{
+    color: white;
+}

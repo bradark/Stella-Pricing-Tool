@@ -2,6 +2,10 @@
     color:white !important;
 }
 
+.m-top-10 {
+    margin-top: 10px;
+}
+
 .bold-text {
     font-weight: 700;
 }
@@ -9,4 +13,10 @@
 .text-grn {
     font-weight: 700;
     color: green;
+}
+
+.err-txt {
+    color: red;
+    font: italic;
+    font-weight: 900;
 }
