@@ -1,0 +1,55 @@
+.pricing-tool-par-div {
+    margin: 1rem;
+    padding: 1rem;
+    max-width: 1000px;
+    border: solid 0.1rem red;
+    border-radius: 0.5rem;
+    background-color: rgb(32,33,36);
+}
+
+.search-btn{
+    margin-top: 1rem;
+    border-radius: 10px;
+    width: 10rem;
+    border:solid 1px red;
+    background-color: rgb(23,23,23) ;
+    color: white;
+    padding: 0.5rem;
+}
+
+.item-input-group{
+    max-width: 250px;
+    border: solid 1px red;
+    border-radius: 7px;
+}
+
+.list-item-img-size{
+    max-width: 75px !important;
+    max-height: 75px !important;
+}
+
+.item-list-item{
+    margin-bottom: 10px;
+    margin-top:10px;
+    border-radius: 5px;
+    border: solid 1px greenyellow;
+    background-color: rgb(23,23,23);
+    color: white;
+    padding: 10px;
+}
+
+.input-label {
+    background-color: rgb(23,23,23) !important;
+    color: white;
+    border: none;
+}
+
+.item-input {
+    background-color: rgb(23,23,23) !important;
+    color: white;
+    border: none;
+}
+
+.item-input::placeholder{
+    color: white;
+}
