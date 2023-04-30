@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {PureComponent, useState, useEffect} from "react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ItemList from "./ItemList";
+import Statistics from "./Statistics";
 import axios from 'axios';
 import cheerio from 'cheerio';
 
@@ -12,7 +14,8 @@ const API = "localhost";
 function PricingTool(){
 
     const [item, setItem] = useState("");
-    const [soldItemList, setSoldItemList] = useState([])
+    const [soldItemList, setSoldItemList] = useState([]);
+    const [chartData, setChartData] = useState([]);
     const [loading, setLoading ] = useState("");
 
     async function handleItemChange(event){
@@ -30,10 +33,11 @@ function PricingTool(){
             })
             .then((resObject) => {
               console.log(resObject)
-              if(resObject.length < 1){
+              if(resObject[0].length < 1){
                 setLoading("ERROR WITH SEARCH TERM");
               }else{
-                setSoldItemList(resObject) 
+                setSoldItemList(resObject[0]) 
+                setChartData(resObject[1]);
                 setLoading("");
               }
             })
@@ -62,6 +66,7 @@ function PricingTool(){
             </Row>
             <Row>
                 <Col>
+                    <Statistics data={chartData} />
                     <ItemList data={soldItemList}/>
                 </Col>
             </Row>

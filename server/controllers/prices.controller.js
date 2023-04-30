@@ -1,16 +1,40 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const fetch = require('node-fetch');
+const createHttpsProxyAgent = require('https-proxy-agent')
+
+//Proxy Credentials
+const username = '';
+const password = '';
+const proxy = ''
 
 async function getPriceList(req, res){
-console.log("Searching Ebay -> " + String(req.params.item));
+  console.log("Searching Ebay -> " + String(req.params.item));
   var url = "https://www.ebay.com/sch/i.html?_from=R40&_sacat=0&LH_Sold=1&LH_Complete=1&_fosrp=1&_nkw=" + req.params.item + "&_pppn=r1&scp=ce0";
   res.set('Access-Control-Allow-Origin', '*');
   headers = {headers: {'Accept':'*/*' , 'Accept-Encoding':'gzip, deflate, br' , 'Accept-Language':'en-US,en;q=0.5' , 'Host':'www.ebay.com' , 'Referer':'https://www.ebay.com/sch/i.html?_from=R40&_nkw=ps5&_in_kw=1&_ex_kw=&_sacat=0&LH_Sold=1&LH_Complete=1&_fosrp=1' , 'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0'}}
-  axios.get(url, headers).then((response) => {
 
-    const $ = cheerio.load(response.data)
+  const agent = createHttpsProxyAgent(
+    `http://${username}:${password}@${proxy}`
+  );
+
+  const response = await fetch(url, {
+    headers: headers.headers,
+    method: 'get',
+    agent: agent,
+  });
+  
+  let html = await response.text();
+
+  console.log(html)
+
+  const $ = cheerio.load(html)
+
+    let finalResp = [];
 
     let soldList = [];
+
+    let chartDataList = [];
 
     $('ul[class="srp-results srp-list clearfix"]').find('li.s-item').each(function (index, element) {
         var title = ($(element).find('div.s-item__title').text().trim());
@@ -28,46 +52,22 @@ console.log("Searching Ebay -> " + String(req.params.item));
             "price":"  $" + price,
             "img":img
         }
-        soldList.push(itemJson)
+
+        let chartJsonData = {
+          "price":parseInt(price),
+          "id":index,
+        }
+
+        chartDataList.push(chartJsonData);
+
+        soldList.push(itemJson);
     });
 
-//    console.log(boPriceList);
-/*
-    console.log(req.body.exclude);
-    for (let i = 0; i < priceList.length; i++) {
-      if(req.body.exclude[0] == ''){
-        console.log("pushing, no exclude");
-        tableData.push({"id" : i+1,
-                      "name" : titleList[i],
-                      "listingid" : idList[i],
-                      "price" : priceList[i],
-                      "format" : listingFormatList[i],
-                      "date" : dateList[i],
-                      "img" : imgLinkList[i]
-                    });
-      }else{
-        includesKeyword = false;
-        for(let j = 0; j < (req.body.exclude).length; j++){
-          console.log("checking excluded " + (String(req.body.exclude[j])));
-          if(((titleList[i].toLowerCase()).includes(String((req.body.exclude[j]).toLowerCase())))){
-            includesKeyword = true;
-          }
-        }
-        if(includesKeyword == false){
-          tableData.push({"id" : i+1,
-                      "name" : titleList[i],
-                      "listingid" : idList[i],
-                      "price" : priceList[i],
-                      "format" : listingFormatList[i],
-                      "date" : dateList[i],
-                      "img" : imgLinkList[i]
-                    });
-        }
-      }
-    }
-    */
-    res.send(soldList);
-  });
+    finalResp.push(soldList);
+    finalResp.push(chartDataList);
+
+    res.send(finalResp);
+
 }
 
 module.exports = {
